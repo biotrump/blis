@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  BLIS    
+#  BLIS
 #  An object-based framework for developing high-performance BLAS-like
 #  libraries.
 #
@@ -62,7 +62,8 @@ SYMLINK    := ln -sf
 FIND       := find
 GREP       := grep
 XARGS      := xargs
-RANLIB     := ranlib
+#RANLIB     := ranlib
+RANLIB     := $(RANLIB)
 INSTALL    := install -c
 
 # Used to refresh CHANGELOG.
@@ -76,11 +77,12 @@ GIT_LOG    := $(GIT) log --decorate
 #
 
 # --- Determine the C compiler and related flags ---
-CC             := gcc
-# Enable IEEE Standard 1003.1-2004 (POSIX.1d). 
+#CC             := gcc
+CC             := $(CC)
+# Enable IEEE Standard 1003.1-2004 (POSIX.1d).
 # NOTE: This is needed to enable posix_memalign().
 CPPROCFLAGS    := -D_POSIX_C_SOURCE=200112L
-CMISCFLAGS     := -std=c99 -mfloat-abi=hard -mfpu=neon 
+CMISCFLAGS     := -std=c99 -mfloat-abi=hard -mfpu=neon
 CPICFLAGS      := -fPIC
 CDBGFLAGS      := -g
 CWARNFLAGS     := -Wall
@@ -96,11 +98,13 @@ CFLAGS         := $(COPTFLAGS)  $(CVECFLAGS) $(CFLAGS_NOOPT)
 CFLAGS_KERNELS := $(CKOPTFLAGS) $(CVECFLAGS) $(CFLAGS_NOOPT)
 
 # --- Determine the archiver and related flags ---
-AR             := ar
+#AR             := ar
+AR             := $(AR)
 ARFLAGS        := cru
 
 # --- Determine the linker and related flags ---
-LINKER         := $(CC)
+#LINKER         := $(CC)
+LINKER         := $(LD)
 SOFLAGS        := -shared
 LDFLAGS        := -lm
 

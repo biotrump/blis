@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  BLIS    
+#  BLIS
 #  An object-based framework for developing high-performance BLAS-like
 #  libraries.
 #
@@ -43,7 +43,7 @@ MAKE_DEFS_MK_INCLUDED := yes
 #
 
 # Variables corresponding to other configure-time options.
-BLIS_ENABLE_VERBOSE_MAKE_OUTPUT := yes
+BLIS_ENABLE_VERBOSE_MAKE_OUTPUT := no
 BLIS_ENABLE_STATIC_BUILD        := yes
 BLIS_ENABLE_DYNAMIC_BUILD       := no
 
@@ -62,7 +62,8 @@ SYMLINK    := ln -sf
 FIND       := find
 GREP       := grep
 XARGS      := xargs
-RANLIB     := ranlib
+#RANLIB     := ranlib
+RANLIB     := $(RANLIB)
 INSTALL    := install -c
 
 # Used to refresh CHANGELOG.
@@ -77,19 +78,20 @@ GIT_LOG    := $(GIT) log --decorate
 
 # --- Determine the C compiler and related flags ---
 ##CC             := gcc
-CC             := aarch64-linux-gnu-gcc
-#CC             := arm-linux-gnueabihf-gcc-4.9.2 
-# Enable IEEE Standard 1003.1-2004 (POSIX.1d). 
+#CC             := aarch64-linux-gnu-gcc
+CC             := $(CC)
+#CC             := arm-linux-gnueabihf-gcc-4.9.2
+# Enable IEEE Standard 1003.1-2004 (POSIX.1d).
 # NOTE: This is needed to enable posix_memalign().
 CPPROCFLAGS    := -D_POSIX_C_SOURCE=200112L
-#CMISCFLAGS     := -std=c99 -mtune=cortex-a57 -mfpu=neon-fp-armv8 -march=armv8-a #-mfloat-abi=hard -mfpu=neon 
-CMISCFLAGS     := -std=c99 -march=armv8-a+fp+simd -ftree-vectorize -O3 -mcpu=cortex-a57 -mtune=cortex-a57 #-mtune=cortex-a57 -march=armv8-a -mfloat-abi=hard -mfpu=neon 
+#CMISCFLAGS     := -std=c99 -mtune=cortex-a57 -mfpu=neon-fp-armv8 -march=armv8-a #-mfloat-abi=hard -mfpu=neon
+CMISCFLAGS     := -std=c99 -march=armv8-a+fp+simd -ftree-vectorize -O3 -mcpu=cortex-a57 -mtune=cortex-a57 #-mtune=cortex-a57 -march=armv8-a -mfloat-abi=hard -mfpu=neon
 CPICFLAGS      := -fPIC
 CDBGFLAGS      := -g
 CWARNFLAGS     := -Wall
 COPTFLAGS      := -march=armv8-a+fp+simd -ftree-vectorize -O3 -mcpu=cortex-a57 -mtune=cortex-a57 #-march=armv8-a -O2 -mtune=cortex-a57 -mfpu=neon-fp-armv8 #-mfpu=neon -O2
 CKOPTFLAGS     := $(COPTFLAGS)
-CVECFLAGS      := -march=armv8-a+fp+simd -ftree-vectorize -O3 -mcpu=cortex-a57 -mtune=cortex-a57 #-march=armv8-a -O2 -mtune=cortex-a57 -mfpu=neon-fp-armv8 
+CVECFLAGS      := -march=armv8-a+fp+simd -ftree-vectorize -O3 -mcpu=cortex-a57 -mtune=cortex-a57 #-march=armv8-a -O2 -mtune=cortex-a57 -mfpu=neon-fp-armv8
 
 # Aggregate all of the flags into multiple groups: one for standard
 # compilation, and one for each of the supported "special" compilation
@@ -99,11 +101,13 @@ CFLAGS         := $(COPTFLAGS)  $(CVECFLAGS) $(CFLAGS_NOOPT)
 CFLAGS_KERNELS := $(CKOPTFLAGS) $(CVECFLAGS) $(CFLAGS_NOOPT)
 
 # --- Determine the archiver and related flags ---
-AR             := ar
+#AR             := ar
+AR             := $(AR)
 ARFLAGS        := cru
 
 # --- Determine the linker and related flags ---
-LINKER         := $(CC)
+#LINKER         := $(CC)
+LINKER         := $(LD)
 SOFLAGS        := -shared
 LDFLAGS        := -lm
 
