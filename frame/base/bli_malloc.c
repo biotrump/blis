@@ -33,6 +33,9 @@
 */
 
 #include "blis.h"
+//https://code.google.com/p/android/issues/detail?id=77861
+//The patches only applies to API 17,18, and 19 where posix_memalign exists
+extern int posix_memalign(void **memptr, size_t alignment, size_t size);
 
 void* bli_malloc( siz_t size )
 {
@@ -47,11 +50,17 @@ void* bli_malloc( siz_t size )
 	p = _aligned_malloc( ( size_t )size,
 	                     ( size_t )BLIS_HEAP_ADDR_ALIGN_SIZE );
 #else
+
+#if defined(__ANDROID_API__) && (__ANDROID_API__ < 17)
+	p = malloc( ( size_t )size );
+#else
 	r_val = posix_memalign( &p,
 	                        ( size_t )BLIS_HEAP_ADDR_ALIGN_SIZE,
 	                        ( size_t )size );
 
 	if ( r_val != 0 ) bli_abort();
+#endif
+	
 #endif
 
 	if ( p == NULL ) bli_abort();

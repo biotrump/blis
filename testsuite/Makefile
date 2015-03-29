@@ -223,9 +223,11 @@ BLIS_LIB       := $(BLIS_LIB_PATH)/libblis.a
 # present in the current BLIS configuration's makefile definitions file
 # (ie: config/<configname>/make_defs.mk).
 # CC             := gcc
+#CC		:= ${CC}
 # LINKER         := $(CC)
-# CFLAGS         := -g -O2 -Wall -Wno-comment
-# LDFLAGS        := 
+#CFLAGS         := -g -O2 -Wall -Wno-comment
+#LDFLAGS        := -L/home/thomas/aosp/NDK/android-ndk-r10d/platforms/android-14/arch-arm/usr/lib -lm -lc
+#LDFLAGS        := -L/home/thomas/aosp/NDK/android-ndk-r10d/platforms/android-14/arch-arm/ -lm_hard
 # INSTALL_PREFIX := $(HOME)/blis
 
 

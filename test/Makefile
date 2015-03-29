@@ -172,10 +172,11 @@ TEST_OBJS      := $(patsubst $(TEST_SRC_PATH)/%.c, \
 
 # Add installed and local header paths to CFLAGS
 CFLAGS         += -I$(BLIS_INC_PATH) -I$(TEST_SRC_PATH)
-
+CC             := $(CC)
 LINKER         := $(CC)
-LDFLAGS        := #-L/home/00146/field/gnu/gcc-4.8.2/lib64
-LDFLAGS        += -lgfortran -lm -lpthread
+#LINKER         := $(LD)
+#LDFLAGS        := #-L/home/00146/field/gnu/gcc-4.8.2/lib64
+LDFLAGS        += -lgfortran -lm -lpthread -fPIE -pie
 
 
 

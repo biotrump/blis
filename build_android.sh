@@ -71,9 +71,10 @@ esac
 : ${NDK_ROOT:?}
 
 echo "Using: $NDK_ROOT/toolchains/${TARGPLAT}-${TOOL}/prebuilt/${HOSTPLAT}/bin"
-export ARCH
-export PATH="$NDK_ROOT/toolchains/${TARGPLAT}-${TOOL}/prebuilt/${HOSTPLAT}/bin/:\
-$NDK_ROOT/toolchains/${TARGPLAT}-${TOOL}/prebuilt/${HOSTPLAT}/${TARGPLAT}/bin/:$PATH"
+export ARCH  
+#export PATH="$NDK_ROOT/toolchains/${TARGPLAT}-${TOOL}/prebuilt/${HOSTPLAT}/bin/:\
+#$NDK_ROOT/toolchains/${TARGPLAT}-${TOOL}/prebuilt/${HOSTPLAT}/${TARGPLAT}/bin/:$PATH"
+export PATH="$NDK_ROOT/toolchains/${TARGPLAT}-${TOOL}/prebuilt/${HOSTPLAT}/bin/:$PATH"
 gcc --version
 #exit
 export SYS_ROOT="$NDK_ROOT/platforms/${ANDROID_APIVER}/arch-${ARCH}/"
@@ -82,9 +83,14 @@ export LD="${TARGPLAT}-ld"
 export AR="${TARGPLAT}-ar"
 export RANLIB="${TARGPLAT}-ranlib"
 export STRIP="${TARGPLAT}-strip"
-export CFLAGS="-Os"
+#export CFLAGS="-Os -fPIE"
+export CFLAGS="-Os -fPIE --sysroot=$SYS_ROOT"
+#export CFLAGS="--sysroot=$ANDROID_SYSROOT"
+export CXXFLAGS="-fPIE --sysroot=$ANDROID_SYSROOT"
+
 #include path :
 #platforms/android-21/arch-arm/usr/include/
+
 
 make clean
 
@@ -92,8 +98,19 @@ make clean
 #./configure armv7a
 #NEON SIMD
 ./configure cortex-a9
-#mkdir -p $INSTALL_DIR
-make -j${CORE_COUNT}
 
+#mkdir -p $INSTALL_DIR
+
+make -j${CORE_COUNT}
+#make -j${CORE_COUNT} test
+
+#make
+#cd mpi_test
+#make
+#cd ..
+cd testsuite
+make clean
+make
+#cd ..
 #recover these auto-gen files
 

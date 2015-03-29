@@ -103,8 +103,8 @@ AR             := $(AR)
 ARFLAGS        := cru
 
 # --- Determine the linker and related flags ---
-#LINKER         := $(CC)
-LINKER         := $(LD)
+LINKER         := $(CC)
+#LINKER         := $(LD)
 SOFLAGS        := -shared
 LDFLAGS        := -lm
 

@@ -62,7 +62,8 @@ SYMLINK    := ln -sf
 FIND       := find
 GREP       := grep
 XARGS      := xargs
-RANLIB     := ranlib
+#RANLIB     := ranlib
+RANLIB     := ${RANLIB}
 INSTALL    := install -c
 
 # Used to refresh CHANGELOG.
@@ -81,20 +82,23 @@ CC             := $(CC)
 # Enable IEEE Standard 1003.1-2004 (POSIX.1d).
 # NOTE: This is needed to enable posix_memalign().
 CPPROCFLAGS    := -D_POSIX_C_SOURCE=200112L
-CMISCFLAGS     := -std=c99 -mfloat-abi=hard -mfpu=neon
+#CMISCFLAGS     := -std=c99 -mfloat-abi=hard -mfpu=neon
+CMISCFLAGS     := -std=c99 -mfloat-abi=softfp -mfpu=neon
 CPICFLAGS      := -fPIC
 CDBGFLAGS      := -g
 CWARNFLAGS     := -Wall
-COPTFLAGS      := -march=armv7-a -mfpu=neon -O2 -mfloat-abi=hard
+#COPTFLAGS      := -march=armv7-a -mfpu=neon -O2 -mfloat-abi=hard
+COPTFLAGS      := -march=armv7-a -mfpu=neon -O2 -mfloat-abi=softfp
 CKOPTFLAGS     := $(COPTFLAGS)
 CVECFLAGS      := #-msse3 -march=native # -mfpmath=sse
 
 # Aggregate all of the flags into multiple groups: one for standard
 # compilation, and one for each of the supported "special" compilation
 # modes.
-CFLAGS_NOOPT   := $(CDBGFLAGS) $(CWARNFLAGS) $(CPICFLAGS) $(CMISCFLAGS) $(CPPROCFLAGS)
-CFLAGS         := $(COPTFLAGS)  $(CVECFLAGS) $(CFLAGS_NOOPT)
-CFLAGS_KERNELS := $(CKOPTFLAGS) $(CVECFLAGS) $(CFLAGS_NOOPT)
+#android needs -fPIE -pie
+CFLAGS_NOOPT   := $(CDBGFLAGS) $(CWARNFLAGS) $(CPICFLAGS) $(CMISCFLAGS) $(CPPROCFLAGS) -fPIE
+CFLAGS         := $(COPTFLAGS)  $(CVECFLAGS) $(CFLAGS_NOOPT) -fPIE
+CFLAGS_KERNELS := $(CKOPTFLAGS) $(CVECFLAGS) $(CFLAGS_NOOPT) -fPIE
 
 # --- Determine the archiver and related flags ---
 #AR             := ar
@@ -102,11 +106,13 @@ AR             := $(AR)
 ARFLAGS        := cru
 
 # --- Determine the linker and related flags ---
-#LINKER         := $(CC)
-LINKER         := $(LD)
+LINKER         := $(CC)
+#LINKER         := $(LD)
 SOFLAGS        := -shared
-LDFLAGS        := -lm
-
+#softfp with -lm
+LDFLAGS        := -fPIE -pie -lm
+#-mfloat-abi=hard
+#LDFLAGS        := -fPIE -pie -lm_hard
 
 
 # end of ifndef MAKE_DEFS_MK_INCLUDED conditional block
