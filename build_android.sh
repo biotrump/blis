@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Compiles ffts for Android
 # Make sure you have NDK_ROOT defined in .bashrc or .bash_profile
 # Modify INSTALL_DIR to suit your situation
@@ -51,18 +51,18 @@ echo arm=$arm
 case arm in
   arm)
     TARGPLAT=arm-linux-androideabi
-    ARCH=arm
+    ARCHI=arm
     CONFTARG=arm-eabi
   ;;
   x86)
     TARGPLAT=x86
-    ARCH=x86
+    ARCHI=x86
     CONFTARG=x86
   ;;
   mips)
   ## probably wrong
     TARGPLAT=mipsel-linux-android
-    ARCH=mips
+    ARCHI=mips
     CONFTARG=mips
   ;;
   *) echo $0: Unknown target; exit
@@ -71,13 +71,13 @@ esac
 : ${NDK_ROOT:?}
 
 echo "Using: $NDK_ROOT/toolchains/${TARGPLAT}-${TOOL}/prebuilt/${HOSTPLAT}/bin"
-export ARCH  
+export ARCHI
 #export PATH="$NDK_ROOT/toolchains/${TARGPLAT}-${TOOL}/prebuilt/${HOSTPLAT}/bin/:\
 #$NDK_ROOT/toolchains/${TARGPLAT}-${TOOL}/prebuilt/${HOSTPLAT}/${TARGPLAT}/bin/:$PATH"
 export PATH="$NDK_ROOT/toolchains/${TARGPLAT}-${TOOL}/prebuilt/${HOSTPLAT}/bin/:$PATH"
-gcc --version
+#gcc --version
 #exit
-export SYS_ROOT="$NDK_ROOT/platforms/${ANDROID_APIVER}/arch-${ARCH}/"
+export SYS_ROOT="$NDK_ROOT/platforms/${ANDROID_APIVER}/arch-${ARCHI}/"
 export CC="${TARGPLAT}-gcc --sysroot=$SYS_ROOT"
 export LD="${TARGPLAT}-ld"
 export AR="${TARGPLAT}-ar"
@@ -85,32 +85,31 @@ export RANLIB="${TARGPLAT}-ranlib"
 export STRIP="${TARGPLAT}-strip"
 #export CFLAGS="-Os -fPIE"
 export CFLAGS="-Os -fPIE --sysroot=$SYS_ROOT"
-#export CFLAGS="--sysroot=$ANDROID_SYSROOT"
-export CXXFLAGS="-fPIE --sysroot=$ANDROID_SYSROOT"
+export CXXFLAGS="-fPIE --sysroot=$SYS_ROOT"
 
 #include path :
 #platforms/android-21/arch-arm/usr/include/
 
-
 make clean
 
 #VFP
-#./configure armv7a
+./configure armv7a
+
 #NEON SIMD
-./configure cortex-a9
+#./configure cortex-a9
 
 #mkdir -p $INSTALL_DIR
 
 make -j${CORE_COUNT}
-#make -j${CORE_COUNT} test
 
-#make
-#cd mpi_test
-#make
-#cd ..
-cd testsuite
-make clean
-make
-#cd ..
-#recover these auto-gen files
+#pushd mpi_test
+#make -j${CORE_COUNT}
+#popd
 
+#pushd test
+#make -j${CORE_COUNT} blis
+#popd
+
+pushd testsuite
+make -j${CORE_COUNT}
+popd

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  BLIS    
+#  BLIS
 #  An object-based framework for developing high-performance BLAS-like
 #  libraries.
 #
@@ -36,7 +36,7 @@
 # Makefile
 #
 # Field G. Van Zee
-# 
+#
 # Makefile for standalone BLIS test drivers.
 #
 
@@ -172,11 +172,12 @@ TEST_OBJS      := $(patsubst $(TEST_SRC_PATH)/%.c, \
 
 # Add installed and local header paths to CFLAGS
 CFLAGS         += -I$(BLIS_INC_PATH) -I$(TEST_SRC_PATH)
-CC             := $(CC)
-LINKER         := $(CC)
+#CC             := $(CC)
+#LINKER         := $(CC)
 #LINKER         := $(LD)
 #LDFLAGS        := #-L/home/00146/field/gnu/gcc-4.8.2/lib64
 LDFLAGS        += -lgfortran -lm -lpthread -fPIE -pie
+#LDFLAGS        += -lgfortran -lm_hard -lpthread -fPIE -pie
 
 
 

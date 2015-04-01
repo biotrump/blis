@@ -63,7 +63,7 @@ FIND       := find
 GREP       := grep
 XARGS      := xargs
 #RANLIB     := ranlib
-RANLIB     := $(RANLIB)
+#RANLIB     := $(RANLIB)
 INSTALL    := install -c
 
 # Used to refresh CHANGELOG.
@@ -79,7 +79,7 @@ GIT_LOG    := $(GIT) log --decorate
 # --- Determine the C compiler and related flags ---
 ##CC             := gcc
 #CC             := aarch64-linux-gnu-gcc
-CC             := $(CC)
+#CC             := $(CC)
 #CC             := arm-linux-gnueabihf-gcc-4.9.2
 # Enable IEEE Standard 1003.1-2004 (POSIX.1d).
 # NOTE: This is needed to enable posix_memalign().
@@ -102,14 +102,17 @@ CFLAGS_KERNELS := $(CKOPTFLAGS) $(CVECFLAGS) $(CFLAGS_NOOPT)
 
 # --- Determine the archiver and related flags ---
 #AR             := ar
-AR             := $(AR)
+#AR             := $(AR)
 ARFLAGS        := cru
 
 # --- Determine the linker and related flags ---
 LINKER         := $(CC)
 #LINKER         := $(LD)
 SOFLAGS        := -shared
-LDFLAGS        := -lm
+#-mfloat-abi=softfp
+LDFLAGS        := -lm -fPIE -pie
+#-mfloat-abi=hard
+#LDFLAGS        := -lm_hard -fPIE -pie
 
 
 

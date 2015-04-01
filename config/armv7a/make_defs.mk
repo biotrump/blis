@@ -63,7 +63,7 @@ FIND       := find
 GREP       := grep
 XARGS      := xargs
 #RANLIB     := ranlib
-RANLIB     := $(RANLIB)
+#RANLIB     := $(RANLIB)
 INSTALL    := install -c
 
 # Used to refresh CHANGELOG.
@@ -78,35 +78,43 @@ GIT_LOG    := $(GIT) log --decorate
 
 # --- Determine the C compiler and related flags ---
 #CC             := gcc
-CC             := $(CC)
+#CC             := $(CC)
 # Enable IEEE Standard 1003.1-2004 (POSIX.1d).
 # NOTE: This is needed to enable posix_memalign().
+#vfpv3,4 is supported in ARMV7-a and later, so all cortex-Ax are in ARMV7-a or ARMV8-a
 CPPROCFLAGS    := -D_POSIX_C_SOURCE=200112L
-CMISCFLAGS     := -std=c99 -O3 -mfloat-abi=hard -mfpu=vfpv3 -marm -march=armv7-a #-g
-CPICFLAGS      := -fPIC
-CDBGFLAGS      := #-g
+CMISCFLAGS     := -std=c99 -marm -march=armv7-a
+#-fPIC for shared lib
+CPICFLAGS      := -fPIC -fPIE
+CDBGFLAGS      := -g
 CWARNFLAGS     := -Wall
-COPTFLAGS      := -marm -march=armv7-a -mfpu=vfpv3 -O3 -mfloat-abi=hard #-g
+COPTFLAGS      := -O3
 CKOPTFLAGS     := $(COPTFLAGS)
-CVECFLAGS      := #-msse3  # -mfpmath=sse
+#https://gcc.gnu.org/onlinedocs/gcc/ARM-Options.html
+#CVECFLAGS      := -mfloat-abi=softfp -mfpu=neon-vfpv4 # noen does not seems to work very well.
+CVECFLAGS      := -mfloat-abi=softfp -mfpu=vfpv3
+#CVECFLAGS      := -mfloat-abi=hard -mfpu=vfpv3
 
 # Aggregate all of the flags into multiple groups: one for standard
 # compilation, and one for each of the supported "special" compilation
 # modes.
-CFLAGS_NOOPT   := $(CDBGFLAGS) $(CWARNFLAGS) $(CPICFLAGS) $(CMISCFLAGS) $(CPPROCFLAGS)
-CFLAGS         := $(COPTFLAGS)  $(CVECFLAGS) $(CFLAGS_NOOPT)
-CFLAGS_KERNELS := $(CKOPTFLAGS) $(CVECFLAGS) $(CFLAGS_NOOPT)
+CFLAGS_NOOPT   := $(CDBGFLAGS) $(CVECFLAGS) $(CWARNFLAGS) $(CPICFLAGS) $(CMISCFLAGS) $(CPPROCFLAGS)
+CFLAGS         := $(COPTFLAGS)  $(CVECFLAGS) $(CPICFLAGS) $(CPPROCFLAGS) $(CMISCFLAGS)
+CFLAGS_KERNELS := $(CKOPTFLAGS) $(CVECFLAGS) $(CPICFLAGS) $(CMISCFLAGS)
 
 # --- Determine the archiver and related flags ---
 #AR             := ar
-AR             := $(AR)
+#AR             := $(AR)
 ARFLAGS        := cru
 
 # --- Determine the linker and related flags ---
 LINKER         := $(CC)
 #LINKER         := $(LD)
 SOFLAGS        := -shared
-LDFLAGS        := -lm
+#-mfloat-abi=softfp
+LDFLAGS        := -lm -fPIE -pie
+#-mfloat-abi=hard
+#LDFLAGS        := -lm_hard -fPIE -pie
 
 
 

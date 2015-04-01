@@ -169,7 +169,7 @@
 // the CBLAS compatibility layer will use the integer type size definition
 // specified above when defining the size of its own integers (regardless of
 // whether the BLAS layer was enabled directly or indirectly).
-//#define BLIS_ENABLE_CBLAS
+#define BLIS_ENABLE_CBLAS
 
 
 
