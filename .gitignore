@@ -27,7 +27,7 @@
 *.map
 
 # -- build system files --
-
+version
 config.mk
 
 # -- makefile fragments --
