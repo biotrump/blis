@@ -38,7 +38,6 @@ INSTALL_DIR="`pwd`/java/android/bin"
 #Gingerbread	2.3.3 - 2.3.7	API level 10
 #Gingerbread	2.3 - 2.3.2	API level 9, NDK 5
 #Froyo	2.2.x	API level 8, NDK 4
-
 export NDK_ROOT=${HOME}/NDK/android-ndk-r10d
 #gofortran is supported in r9
 #export NDK_ROOT=${HOME}/NDK/android-ndk-r9
