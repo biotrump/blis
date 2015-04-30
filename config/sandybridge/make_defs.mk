@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  BLIS    
+#  BLIS
 #  An object-based framework for developing high-performance BLAS-like
 #  libraries.
 #
@@ -77,11 +77,11 @@ GIT_LOG    := $(GIT) log --decorate
 
 # --- Determine the C compiler and related flags ---
 CC             := gcc
-# Enable IEEE Standard 1003.1-2004 (POSIX.1d). 
+# Enable IEEE Standard 1003.1-2004 (POSIX.1d).
 # NOTE: This is needed to enable posix_memalign().
 CPPROCFLAGS    := -D_POSIX_C_SOURCE=200112L
 CMISCFLAGS     := -std=c99 -m64 -fopenmp  # -fopenmp -pg
-CPICFLAGS      := -fPIC
+CPICFLAGS      := -fPIC -fPIE
 CDBGFLAGS      := #-g
 CWARNFLAGS     := -Wall
 COPTFLAGS      := -O3 -march=native
@@ -102,8 +102,13 @@ ARFLAGS        := cru
 # --- Determine the linker and related flags ---
 LINKER         := $(CC)
 SOFLAGS        := -shared
-LDFLAGS        := -lm -fopenmp -lpthread
 
+#NDK build
+ifneq "$(strip $(ANDROID_NDK))" ""
+LDFLAGS			:= -lm -pie
+else
+LDFLAGS        := -lm -fopenmp -lpthread
+endif
 
 
 # end of ifndef MAKE_DEFS_MK_INCLUDED conditional block

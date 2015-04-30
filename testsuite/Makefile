@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  BLIS    
+#  BLIS
 #  An object-based framework for developing high-performance BLAS-like
 #  libraries.
 #
@@ -36,7 +36,7 @@
 # Makefile
 #
 # Field G. Van Zee
-# 
+#
 # Makefile for standalone BLIS test drivers.
 #
 
@@ -198,7 +198,12 @@ CFLAGS          := $(CFLAGS) $(INCLUDE_PATHS)
 
 # BLIS library.
 BLIS_LIB_PATH  := $(DIST_PATH)/$(LIB_DIR)/$(CONFIG_NAME)
+
+ifneq "$(strip $(ANDROID_NDK))" ""
+BLIS_LIB       := $(BLIS_LIB_PATH)/libblis-NDK.a
+else
 BLIS_LIB       := $(BLIS_LIB_PATH)/libblis.a
+endif
 
 # BLAS library path(s). This is where the BLAS libraries reside.
 #BLAS_LIB_PATH  := $(HOME)/flame/lib

@@ -83,7 +83,7 @@ CC             := $(CC)
 # NOTE: This is needed to enable posix_memalign().
 CPPROCFLAGS    := -D_POSIX_C_SOURCE=200112L
 CMISCFLAGS     := -std=c99 -mfloat-abi=hard -mfpu=neon
-CPICFLAGS      := -fPIC
+CPICFLAGS      := -fPIC -fPIE
 CDBGFLAGS      := -g
 CWARNFLAGS     := -Wall
 COPTFLAGS      := -march=armv7-a -mfpu=neon -O2
@@ -106,9 +106,12 @@ ARFLAGS        := cru
 LINKER         := $(CC)
 #LINKER         := $(LD)
 SOFLAGS        := -shared
-LDFLAGS        := -lm
+LDFLAGS        := -lm -pie
 
-
+ifneq "$(strip $(ANDROID_NDK))" ""
+#NDK build special
+#LDFLAGS			+= -fPIE -pie
+endif
 
 # end of ifndef MAKE_DEFS_MK_INCLUDED conditional block
 endif

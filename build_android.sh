@@ -58,37 +58,48 @@ ANDROID_APIVER=android-14
 TOOL_VER="4.9"
 fi
 
+if [ $# -ge 1 ]; then
+	export ARCHI=$1
+else
+#default
+	export ARCHI=arm
+fi
+echo ARCHI=$ARCHI
+
 #default is arm
-arm=${arm:-arm}
-echo arm=$arm
-case arm in
+case $ARCHI in
   arm)
     TARGPLAT=arm-linux-androideabi
     CONFTARG=arm-eabi
-    ARCHI=arm
+	echo "Using: $NDK_ROOT/toolchains/${TARGPLAT}-${TOOL_VER}/prebuilt/${HOSTPLAT}/bin"
+	#export PATH="$NDK_ROOT/toolchains/${TARGPLAT}-${TOOL_VER}/prebuilt/${HOSTPLAT}/bin/:\
+	#$NDK_ROOT/toolchains/${TARGPLAT}-${TOOL_VER}/prebuilt/${HOSTPLAT}/${TARGPLAT}/bin/:$PATH"
+	export PATH="${NDK_ROOT}/toolchains/${TARGPLAT}-${TOOL_VER}/prebuilt/${HOSTPLAT}/bin/:$PATH"
   ;;
   x86)
     TARGPLAT=i686-linux-android
     CONFTARG=x86
-    ARCHI=x86
+	echo "Using: $NDK_ROOT/toolchains/x86-${TOOL_VER}/prebuilt/${HOSTPLAT}/bin"
+	export PATH="${NDK_ROOT}/toolchains/x86-${TOOL_VER}/prebuilt/${HOSTPLAT}/bin/:$PATH"
+#specify assembler for x86 SSE3, but ffts's sse.s needs 64bit x86.
+#intel atom z2xxx and the old atoms are 32bit, so 64bit x86 in android can't work in
+#most atom devices.
+#http://forum.cvapp.org/viewtopic.php?f=13&t=423&sid=4c47343b1de899f9e1b0d157d04d0af1
+#	export  CCAS="${TARGPLAT}-as"
+#	export  CCASFLAGS="--64 -march=i686+sse3"
+#	export  CCASFLAGS="--64"
+
   ;;
   mips)
   ## probably wrong
     TARGPLAT=mipsel-linux-android
     CONFTARG=mips
-    ARCHI=mips
   ;;
   *) echo $0: Unknown target; exit
 esac
-echo ARCHI=$ARCHI
 #: ${NDK_ROOT:?}
-
-echo "Using: $NDK_ROOT/toolchains/${TARGPLAT}-${TOOL_VER}/prebuilt/${HOSTPLAT}/bin"
-export ARCHI
-#export PATH="$NDK_ROOT/toolchains/${TARGPLAT}-${TOOL_VER}/prebuilt/${HOSTPLAT}/bin/:\
-#$NDK_ROOT/toolchains/${TARGPLAT}-${TOOL_VER}/prebuilt/${HOSTPLAT}/${TARGPLAT}/bin/:$PATH"
-export PATH="${NDK_ROOT}/toolchains/${TARGPLAT}-${TOOL_VER}/prebuilt/${HOSTPLAT}/bin/:$PATH"
 echo $PATH
+
 export SYS_ROOT="${NDK_ROOT}/platforms/${ANDROID_APIVER}/arch-${ARCHI}/"
 export CC="${TARGPLAT}-gcc --sysroot=$SYS_ROOT"
 export LD="${TARGPLAT}-ld"
@@ -107,11 +118,19 @@ export FC=${FORTRAN}
 
 make clean
 
-#VFP
-./configure armv7a
-
-#NEON SIMD
-#./configure cortex-a9
+case $ARCHI in
+  arm)
+	#NEON SIMD
+	#./configure cortex-a9
+	./configure armv7a
+  ;;
+  x86)
+	./configure sandybridge
+  ;;
+  mips)
+  ;;
+  *) echo $0: Unknown target; exit
+esac
 
 #mkdir -p $INSTALL_DIR
 

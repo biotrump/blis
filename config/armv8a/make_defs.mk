@@ -86,7 +86,7 @@ GIT_LOG    := $(GIT) log --decorate
 CPPROCFLAGS    := -D_POSIX_C_SOURCE=200112L
 #CMISCFLAGS     := -std=c99 -mtune=cortex-a57 -mfpu=neon-fp-armv8 -march=armv8-a #-mfloat-abi=hard -mfpu=neon
 CMISCFLAGS     := -std=c99 -march=armv8-a+fp+simd -ftree-vectorize -O3 -mcpu=cortex-a57 -mtune=cortex-a57 #-mtune=cortex-a57 -march=armv8-a -mfloat-abi=hard -mfpu=neon
-CPICFLAGS      := -fPIC
+CPICFLAGS      := -fPIC -fPIE
 CDBGFLAGS      := -g
 CWARNFLAGS     := -Wall
 COPTFLAGS      := -march=armv8-a+fp+simd -ftree-vectorize -O3 -mcpu=cortex-a57 -mtune=cortex-a57 #-march=armv8-a -O2 -mtune=cortex-a57 -mfpu=neon-fp-armv8 #-mfpu=neon -O2
@@ -110,11 +110,14 @@ LINKER         := $(CC)
 #LINKER         := $(LD)
 SOFLAGS        := -shared
 #-mfloat-abi=softfp
-LDFLAGS        := -lm -fPIE -pie
+LDFLAGS        := -lm -pie
 #-mfloat-abi=hard
 #LDFLAGS        := -lm_hard -fPIE -pie
 
-
+ifneq "$(strip $(ANDROID_NDK))" ""
+#NDK build special
+#LDFLAGS			+= -fPIE -pie
+endif
 
 # end of ifndef MAKE_DEFS_MK_INCLUDED conditional block
 endif

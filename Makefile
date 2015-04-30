@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  BLIS    
+#  BLIS
 #  An object-based framework for developing high-performance BLAS-like
 #  libraries.
 #
@@ -36,7 +36,7 @@
 # Makefile
 #
 # Field G. Van Zee
-# 
+#
 # Top-level makefile for libflame linear algebra library.
 #
 #
@@ -62,7 +62,11 @@
 #
 
 # The base name of the BLIS library that we will build.
+ifneq "$(strip $(ANDROID_NDK))" ""
+BLIS_LIB_BASE_NAME := libblis-NDK
+else
 BLIS_LIB_BASE_NAME := libblis
+endif
 
 # Define the name of the configuration file.
 CONFIG_MK_FILE     := config.mk
@@ -527,7 +531,7 @@ endif
 $(MK_ALL_BLIS_DLL): $(MK_ALL_BLIS_OBJS)
 ifeq ($(BLIS_ENABLE_VERBOSE_MAKE_OUTPUT),yes)
 	$(LINKER) $(SOFLAGS) $(LDFLAGS) -o $@ $?
-else 
+else
 	@echo "Dynamically linking $@"
 	@$(LINKER) $(SOFLAGS) $(LDFLAGS) -o $@ $?
 endif
@@ -773,7 +777,7 @@ endif
 
 changelog: check-env
 	@echo "Updating '$(DIST_PATH)/$(CHANGELOG)' via '$(GIT_LOG)'."
-	@$(GIT_LOG) > $(DIST_PATH)/$(CHANGELOG) 
+	@$(GIT_LOG) > $(DIST_PATH)/$(CHANGELOG)
 
 
 # --- Uninstall rules ---

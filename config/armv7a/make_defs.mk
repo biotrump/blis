@@ -111,11 +111,15 @@ ARFLAGS        := cru
 LINKER         := $(CC)
 #LINKER         := $(LD)
 SOFLAGS        := -shared
-#-mfloat-abi=softfp
-LDFLAGS        := -lm -fPIE -pie
+#-mfloat-abi=softfp -lpthread
+LDFLAGS        := -lm -pie
 #-mfloat-abi=hard
 #LDFLAGS        := -lm_hard -fPIE -pie
 
+ifneq "$(strip $(ANDROID_NDK))" ""
+#NDK build special
+#LDFLAGS			+= -fPIE -pie
+endif
 
 
 # end of ifndef MAKE_DEFS_MK_INCLUDED conditional block
