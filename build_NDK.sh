@@ -22,8 +22,6 @@ CYGWIN*)
   *) echo $0: Unknown platform; exit
 esac
 
-INSTALL_DIR="`pwd`/java/android/bin"
-
 # Modify INSTALL_DIR to suit your situation
 #Lollipop	5.0 - 5.1	API level 21, 22
 #KitKat	4.4 - 4.4.4	API level 19
@@ -38,9 +36,11 @@ INSTALL_DIR="`pwd`/java/android/bin"
 #Gingerbread	2.3.3 - 2.3.7	API level 10
 #Gingerbread	2.3 - 2.3.2	API level 9, NDK 5
 #Froyo	2.2.x	API level 8, NDK 4
-export NDK_ROOT=${HOME}/NDK/android-ndk-r10d
-#gofortran is supported in r9
-#export NDK_ROOT=${HOME}/NDK/android-ndk-r9
+
+if [ -z "${NDK_ROOT}"  ]; then
+	export NDK_ROOT=${HOME}/NDK/android-ndk-r10d
+	#export NDK_ROOT=${HOME}/NDK/android-ndk-r9
+fi
 export ANDROID_NDK=${NDK_ROOT}
 
 if [[ ${NDK_ROOT} =~ .*"-r9".* ]]
@@ -116,16 +116,27 @@ export FORTRAN="${TARGPLAT}-gfortran --sysroot=$SYS_ROOT"
 #Don't let cmake decide it.
 export FC=${FORTRAN}
 
-make clean
-
+if [ -z "$BLIS_OUT" ]; then
+	export BLIS_OUT=`pwd`/build_NDK
+fi
+#make clean
+pushd $BLIS_OUT
 case $ARCHI in
   arm)
 	#NEON SIMD
 	#./configure cortex-a9
-	./configure armv7a
+	rm -rf $BLIS_OUT/lib/armv7/*
+	${BLIS_DIR}/configure armv7a
+	make -j${CORE_COUNT}
+	rm -f $BLIS_OUT/lib/libblis-NDK-arm.a
+	ln -s $BLIS_OUT/lib/armv7a/libblis-NDK.a $BLIS_OUT/lib/libblis-NDK-arm.a
   ;;
   x86)
-	./configure sandybridge
+	rm -rf $BLIS_OUT/lib/sandybridge/*
+	${BLIS_DIR}/configure sandybridge
+	make -j${CORE_COUNT}
+	rm -f $BLIS_OUT/lib/libblis-NDK-x86.a
+	ln -s $BLIS_OUT/lib/sandybridge/libblis-NDK.a $BLIS_OUT/lib/libblis-NDK-x86.a
   ;;
   mips)
   ;;
@@ -133,9 +144,7 @@ case $ARCHI in
 esac
 
 #mkdir -p $INSTALL_DIR
-
-make -j${CORE_COUNT}
-
+popd
 #pushd mpi_test
 #make -j${CORE_COUNT}
 #popd
