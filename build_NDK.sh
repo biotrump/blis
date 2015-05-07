@@ -120,6 +120,9 @@ if [ -z "$BLIS_OUT" ]; then
 	export BLIS_OUT=`pwd`/build_NDK
 fi
 #make clean
+if [ ! -d "${BLIS_OUT}" ]; then
+mkdir -p ${BLIS_OUT}
+fi
 pushd $BLIS_OUT
 case $ARCHI in
   arm)
